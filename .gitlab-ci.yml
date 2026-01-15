@@ -1,0 +1,32 @@
+stages:
+  - lint
+  - test
+  - build
+
+variables:
+  GO_VERSION: "1.23.1"
+
+before_script:
+  - export PATH=$PATH:/usr/local/go/bin
+  - go version
+
+lint:
+  stage: lint
+  image: golangci/golangci-lint:v1.64.8
+  script:
+    - golangci-lint run --config .golangci.yml ./...
+
+test:
+  stage: test
+  image: golang:1.23.1
+  script:
+    - make test
+
+build:
+  stage: build
+  image: golang:1.23.1
+  script:
+    - make build
+  artifacts:
+    paths:
+      - previewer
