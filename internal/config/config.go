@@ -1,20 +1,24 @@
 // Package config содержит конфигурацию сервиса previewer.
 package config
 
-import "time"
+import (
+	"flag"
+	"time"
+)
 
-// Config структура конфига.
 type Config struct {
 	Port      string
-	CacheSize int // Максимальный размер LRU-кэша (кол-во изображений)
 	Timeout   time.Duration
+	CacheSize int64
+	CacheDir  string
 }
 
-// NewDefaultConfig - дефолтные настройки сервиса.
-func NewDefaultConfig() *Config {
-	return &Config{
-		Port:      ":8080",
-		CacheSize: 10,
-		Timeout:   10 * time.Second,
-	}
+func GetConfig() *Config {
+	cfg := &Config{}
+	flag.StringVar(&cfg.Port, "port", ":8080", "HTTP server port")
+	flag.DurationVar(&cfg.Timeout, "timeout", 10*time.Second, "HTTP server timeout")
+	flag.Int64Var(&cfg.CacheSize, "cache", 104857600, "Cache size in bytes")
+	flag.StringVar(&cfg.CacheDir, "dir", "./cache", "Cache directory")
+	flag.Parse()
+	return cfg
 }

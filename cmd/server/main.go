@@ -10,7 +10,11 @@ import (
 )
 
 func main() {
-	cfg := config.NewDefaultConfig()
+	cfg := config.GetConfig()
+
+	if err := proxy.InitCache(cfg.CacheSize, cfg.CacheDir); err != nil {
+		log.Fatalf("Failed to initialize cache: %v", err)
+	}
 
 	http.HandleFunc("/fill/", proxy.Handler)
 
@@ -20,7 +24,11 @@ func main() {
 		WriteTimeout: cfg.Timeout,
 	}
 
-	log.Printf("Starting Previewer server on %s with cache size %d\n", cfg.Port, cfg.CacheSize)
+	log.Printf(
+		"Starting Previewer server on %s, cache dir: %s, max cache: %d bytes",
+		cfg.Port, cfg.CacheDir, cfg.CacheSize,
+	)
+
 	if err := srv.ListenAndServe(); err != nil {
 		log.Fatalf("Server start failed: %v", err)
 	}
