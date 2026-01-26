@@ -1,0 +1,18 @@
+version: "3.9"
+
+services:
+  previewer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: img-previewer
+    container_name: previewer
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=:8080
+      - CACHE_SIZE=104857600
+      - CACHE_DIR=/cache
+    volumes:
+      - ./cache:/app/cache
+    restart: on-failure
