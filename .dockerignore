@@ -1,0 +1,7 @@
+.git
+.gitignore
+cache
+*.md
+*_test.go
+.vscode
+previewer
